@@ -56,6 +56,12 @@ questions = [
         'name': 'enter_price',
         'message': 'At what price did you buy your assets?',
         'validate': FloatValidator
+    },
+    {
+        'type': 'input',
+        'name': 'percentage_to_sell',
+        'message': 'What percentage of your holdings do you want to sell?',
+        'validate': FloatValidator
     }
 ]
 
@@ -94,6 +100,7 @@ def update_price_continuously(settings):
     pair = "{}-{}".format(settings["ticker1"], settings["ticker2"])
     sl_percentage = float(settings["sl_percentage"])
     enter_price = float(settings["enter_price"])
+    percentage_to_sell = float(settings["percentage_to_sell"])
 
     # get the amount (of primary asset) that is owned by the user
     amount_owned = math.trunc(float(find_holding(primary_asset)) * 10_000) / 10_000
@@ -112,7 +119,7 @@ def update_price_continuously(settings):
 
     # loop infinitely (with 10 second pauses) until stop-loss is hit and assets are sold
     while True:
-        previous_stop_loss = do_tick(pair, price_offset, amount_owned, previous_stop_loss)
+        previous_stop_loss = do_tick(pair, price_offset, amount_owned, previous_stop_loss, percentage_to_sell)
         time.sleep(10)
 
 
@@ -138,7 +145,7 @@ def find_holding(currency):
                 return holding
 
 
-def do_tick(pair, price_offset, amount_owned, previous_stop_loss):
+def do_tick(pair, price_offset, amount_owned, previous_stop_loss, percentage_to_sell):
     """
     Checks whether the stop-loss is hit, or if the current price has increased.
     Either sells the funds, lifts the stop-loss price or does nothing.
@@ -147,6 +154,7 @@ def do_tick(pair, price_offset, amount_owned, previous_stop_loss):
     :param price_offset:
     :param amount_owned:
     :param previous_stop_loss:
+    :param percentage_to_sell:
     :return:
     """
     global this_tick_stop_loss
@@ -158,7 +166,7 @@ def do_tick(pair, price_offset, amount_owned, previous_stop_loss):
         notify.title = "Triggered latest stop-loss!"
         notify.message = "Selling for the best market price."
         notify.send()
-        sell(pair, amount_owned)
+        sell(pair, amount_owned, percentage_to_sell)
     elif this_tick_stop_loss > previous_stop_loss:
         # price increased, and lifting the stop-loss price.
         console.log("[yellow]Higher price: stop-loss lifted from {} to {}".format(
@@ -171,15 +179,17 @@ def do_tick(pair, price_offset, amount_owned, previous_stop_loss):
         return previous_stop_loss
 
 
-def sell(pair, holding):
+def sell(pair, amount_owned, percentage_to_sell):
     """
     Sell the funds that are in the trading account.
 
     :param pair:
-    :param holding:
+    :param amount_owned:
+    :param percentage_to_sell:
     :return:
     """
-    order = client.create_market_order(pair, client.SIDE_SELL, size=holding)
+    amount_to_sell = amount_owned * (percentage_to_sell / 100.0)
+    order = client.create_market_order(pair, client.SIDE_SELL, size=amount_to_sell)
     order_details = client.get_order(order["orderId"])
     price = float(order_details["dealFunds"]) / float(order_details["dealSize"])
     console.log("[yellow]Sold out @  " + str(price) + "")
