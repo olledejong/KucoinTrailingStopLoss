@@ -1,4 +1,17 @@
-# KuCoin Trailing Stop-Loss
+# KuCoin Trailing Stop-Loss Script
+
+**DISCLAIMER: I'm not in any way responsible for any input mistakes which result in trading losses**
+
+This script connects to your API (created by you on your desktop within your kucoin account) and once you see an opportunity for a long position,
+you can manually enter this by buying the asset. Just as you normally would.  
+
+After you buy the asset, you fire up the script, which asks you which
+asset you bought and on which pair. It then asks you for the stop-loss percentage you would like to use and at what price you got in. Using those 
+numbers, an initial stop loss will be set. 
+
+Every time the price climbs, the stop-loss is lifted as well. This will result in that, if the price
+rises the with the percentage you filled in as the stop-loss percentage from your initial buy price, you will only be able to make profit. This is because the
+stop-loss price is then at your initial buy-in price.
 
 ## Installation
 
@@ -20,7 +33,7 @@ pip3 install -r requirements.txt
 4) Open tslk.py in a text-editor of you choice and fill in the API credentials where it says:  
    **YOUR STUFF GOES HERE**
    
-## Execution
+## Using the actual script
 
 In the same terminal window from before, while still in the KucoinTrailingStopLoss folder, you can run the script like so:
 
@@ -32,9 +45,6 @@ or
 python3 tlsk.py
 ```
 
-Follow the instructions. Please be sure about your input.  
+Follow the instructions. Please be careful about making typos while filling things out.
 
 Enjoy.
-
-**DISCLAIMER: I'm not in any way responsible for any input mistakes which result in trading losses**
-
