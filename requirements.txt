@@ -1,0 +1,4 @@
+python-kucoin~=2.1.2
+notify-py~=0.3.1
+rich~=9.8.2
+PyInquirer~=1.0.3
