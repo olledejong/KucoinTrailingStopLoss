@@ -5,7 +5,7 @@
 1) Install [Python](https://www.python.org/downloads/), and make sure you check the box which says: "Add Python VERSION to PATH".  
   
 
-2) Using a command prompt, install the python packages via pip:
+2) In a command terminal / cmd window, navigate to the KucoinTrailingStopLoss folder and install the python packages using pip (keep the terminal open once finished):
 ```
 pip install -r requirements.txt
 ```
@@ -22,7 +22,7 @@ pip3 install -r requirements.txt
    
 ## Execution
 
-In a command terminal / cmd window, navigate to the KucoinTrailingStopLoss folder and run the script like so:
+In the same terminal window from before, while still in the KucoinTrailingStopLoss folder, you can run the script like so:
 
 ```
 python tslk.py
