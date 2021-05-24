@@ -177,7 +177,6 @@ def do_tick(pair, price_offset, amount_owned, previous_stop_loss, percentage_to_
         return this_tick_stop_loss
     else:
         # stop-loss not hit, but also no price increase
-        console.log("[yellow]No significant price change. Going again in {} seconds".format(interval_seconds))
         return previous_stop_loss
 
 
