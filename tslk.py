@@ -167,7 +167,7 @@ def do_tick(pair, price_offset, amount_owned, previous_stop_loss, percentage_to_
         notify.title = "Triggered latest stop-loss!"
         notify.message = "Selling for the best market price."
         notify.send()
-        # sell(pair, amount_owned, percentage_to_sell)
+        sell(pair, amount_owned, percentage_to_sell)
     elif this_tick_stop_loss > previous_stop_loss:
         # price increased, and lifting the stop-loss price.
         console.log("[yellow]Price increase detected: stop-loss lifted from {} to {}".format(
