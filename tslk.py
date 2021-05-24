@@ -43,7 +43,7 @@ questions = [
     {
         'type': 'input',
         'name': 'ticker2',
-        'message': 'What would you like to sell it for?'
+        'message': 'What is the ticker of the asset you want to for?'
     },
     {
         'type': 'input',
@@ -84,6 +84,7 @@ console = Console()
 global client
 global assets
 global this_tick_stop_loss
+interval_seconds = 10
 
 
 def update_price_continuously(settings):
@@ -120,7 +121,7 @@ def update_price_continuously(settings):
     # loop infinitely (with 10 second pauses) until stop-loss is hit and assets are sold
     while True:
         previous_stop_loss = do_tick(pair, price_offset, amount_owned, previous_stop_loss, percentage_to_sell)
-        time.sleep(10)
+        time.sleep(interval_seconds)
 
 
 def find_holding(currency):
@@ -166,16 +167,17 @@ def do_tick(pair, price_offset, amount_owned, previous_stop_loss, percentage_to_
         notify.title = "Triggered latest stop-loss!"
         notify.message = "Selling for the best market price."
         notify.send()
-        sell(pair, amount_owned, percentage_to_sell)
+        # sell(pair, amount_owned, percentage_to_sell)
     elif this_tick_stop_loss > previous_stop_loss:
         # price increased, and lifting the stop-loss price.
-        console.log("[yellow]Higher price: stop-loss lifted from {} to {}".format(
+        console.log("[yellow]Price increase detected: stop-loss lifted from {} to {}".format(
             str(previous_stop_loss),
             str(this_tick_stop_loss)
         ))
         return this_tick_stop_loss
     else:
         # stop-loss not hit, but also no price increase
+        console.log("[yellow]No significant price change. Going again in {} seconds".format(interval_seconds))
         return previous_stop_loss
 
 
